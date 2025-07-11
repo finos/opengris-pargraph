@@ -22,7 +22,7 @@ dynamic = ["dependencies", "version"]
 Home = "https://github.com/Citi/pargraph"
 
 [project.optional-dependencies]
-graphblas = ["python-graphblas", "numpy==2.3.1"]
+graphblas = ["python-graphblas==2025.2.0", "numpy==2.2.3"]
 
 [tool.setuptools]
 packages = ["pargraph"]
