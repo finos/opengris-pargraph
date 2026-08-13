@@ -4,14 +4,14 @@ This file lists the maintainers of this repository.
 
 ## Current maintainers
 
-| GitHub Username | Name | Organization | Email |
-|----------------|------|--------------|-------|
-| @1597463007 | *please add name* | *please add organization* | *please add email* |
-| @e117649 | *please add name* | *please add organization* | *please add email* |
-| @gxuu | gxu | *please add organization* | *please add email* |
-| @magniloquency | *please add name* | *please add organization* | *please add email* |
-| @rafa-be | *please add name* | @citi | *please add email* |
-| @sharpener6 | *please add name* | *please add organization* | *please add email* |
+| GitHub Username | Name | Organization | Email (optional) |
+|----------------|------|--------------|------------------|
+| @1597463007 | *please add name* | *please add organization* |  |
+| @e117649 | *please add name* | *please add organization* |  |
+| @gxuu | gxu | *please add organization* |  |
+| @magniloquency | *please add name* | *please add organization* |  |
+| @rafa-be | *please add name* | @citi |  |
+| @sharpener6 | *please add name* | *please add organization* |  |
 
 For information about maintainer responsibilities and resources, see the [FINOS Maintainers Cheatsheet](https://community.finos.org/docs/finos-maintainers-cheatsheet).
 
