@@ -1,5 +1,6 @@
 import base64
 import copy
+import functools
 import inspect
 import itertools
 import re
@@ -1064,7 +1065,7 @@ class Graph:
                     dict_graph[constant_key] = output_position
                     dict_graph[graph_key] = (_unpack_tuple, node_uuid, constant_key)
 
-                dict_graph[node_uuid] = (node.function,) + tuple(args)
+                dict_graph[node_uuid] = (_wrap_with_parallel_backend(node.function),) + tuple(args)
 
             elif isinstance(node, GraphCall):
                 new_input_mapping = {
@@ -1225,3 +1226,31 @@ def _unpack_tuple(graph_key: tuple, index: int) -> Any:
     :return: value at index
     """
     return graph_key[index]
+
+
+def _wrap_with_parallel_backend(function: Callable) -> Callable:
+    try:
+        import parfun
+    except ImportError:
+        return function
+
+    current_backend = parfun.get_parallel_backend()
+    if current_backend is None:
+        return function
+
+    original_function = getattr(function, "_pargraph_original_function", function)
+    propagated_backend: Union[str, Any] = current_backend if current_backend.allows_nested_tasks() else "none"
+
+    @functools.wraps(original_function)
+    def wrapped(*args, **kwargs):
+        if propagated_backend == "none":
+            if parfun.get_parallel_backend() is None:
+                return original_function(*args, **kwargs)
+        elif parfun.get_parallel_backend() is propagated_backend:
+            return original_function(*args, **kwargs)
+
+        with parfun.set_parallel_backend_context(propagated_backend):
+            return original_function(*args, **kwargs)
+
+    wrapped._pargraph_original_function = original_function  # type: ignore[attr-defined]
+    return wrapped
