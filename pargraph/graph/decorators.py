@@ -18,6 +18,7 @@ from pargraph.graph.objects import (
     NodeKey,
     NodeOutputKey,
     OutputKey,
+    _wrap_with_parallel_backend,
 )
 
 
@@ -273,7 +274,7 @@ def delayed(function: Callable) -> Graphable:
                 inputs={InputKey(key=name): None for name, arg in arg_dict.items() if arg._target is None},
                 nodes={
                     NodeKey(key=function.__name__): FunctionCall(
-                        function=function,
+                        function=_wrap_with_parallel_backend(function),
                         args={
                             name: InputKey(key=name) if arg._target is None else ConstKey(key=name)
                             for name, arg in arg_dict.items()
@@ -302,7 +303,8 @@ def delayed(function: Callable) -> Graphable:
         node_id = f"{function.__name__}_{uuid.uuid4().hex}"
         merged_graph = _merge_graphs(*(arg._graph for arg in arg_dict.values()))
         merged_graph.nodes[NodeKey(key=node_id)] = FunctionCall(
-            function=function, args={name: graph_context._target for name, graph_context in arg_dict.items()}
+            function=_wrap_with_parallel_backend(function),
+            args={name: graph_context._target for name, graph_context in arg_dict.items()},
         )
 
         return (
